@@ -59,7 +59,7 @@
 
   // TODO: Chain together a `map` and a `reduce` call to produce an array of unique author names.
   Article.allAuthors = () => {
-    return Article.all.map(article => article.author).reduce((authors, author) => {authors.indexOf(author) === -1 ? authors.push(author): null, []});
+    return Article.all.map(article => article.author).reduce((authors, author) => {authors.indexOf(author) === -1 ? authors.push(author): undefined, []});
   };
 
   Article.numWordsByAuthor = () => {
