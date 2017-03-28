@@ -2,7 +2,7 @@
 
 // TODO: Wrap the entire contents of this file in an IIFE.
 // Pass in to the IIFE a module, upon which objects can be attached for later access.
-(
+(function(module) {
   var articleView = {};
 
   articleView.populateFilters = function() {
@@ -122,4 +122,5 @@
     $('#blog-stats .words').text(Article.numWordsAll());
     return templateRender(this);
   };
-)();
+  module.articleView = articleView;
+}(window));

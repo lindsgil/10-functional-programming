@@ -4,7 +4,7 @@
 
 // TODO: Wrap the entire contents of this file in an IIFE.
 // Pass in to the IIFE a module, upon which objects can be attached for later access.
-(
+(function(module) {
   function Article(opts) {
     // REVIEW: Lets review what's actually happening here, and check out some new syntax!!
     Object.keys(opts).forEach(e => this[e] = opts[e]);
@@ -23,8 +23,9 @@
   };
 
   Article.loadAll = rows => {
-    Article.all = rows.map(rows.sort((a,b) => (new Date(b.publishedOn)) - (new Date(a.publishedOn))));
+    rows.sort((a,b) => (new Date(b.publishedOn)) - (new Date(a.publishedOn)));
 
+    Article.all = rows.map(ele => new Article(ele));
     // TODO: Refactor this forEach code, by using a `.map` call instead, since what we are trying to accomplish
     // is the transformation of one colleciton into another.
 
@@ -48,7 +49,7 @@
 
   // TODO: Chain together a `map` and a `reduce` call to get a rough count of all words in all articles.
   Article.numWordsAll = () => {
-    return Article.all.map(allArticlesBody => allArticlesBody + this.body).reduce()
+    return Article.all.map(allArticlesBody => Article.all.body.split(' ')).reduce(numWords => allArticlesBody.length);
   };
 
   // TODO: Chain together a `map` and a `reduce` call to produce an array of unique author names.
@@ -107,4 +108,5 @@
     .then(console.log)
     .then(callback);
   };
-)();
+  module.Article = Article;
+}(window));
