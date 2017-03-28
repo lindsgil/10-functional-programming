@@ -4,7 +4,7 @@
 
 // TODO: Wrap the entire contents of this file in an IIFE.
 // Pass in to the IIFE a module, upon which objects can be attached for later access.
-(
+(function(module) {
   function Article(opts) {
     // REVIEW: Lets review what's actually happening here, and check out some new syntax!!
     Object.keys(opts).forEach(e => this[e] = opts[e]);
@@ -23,8 +23,9 @@
   };
 
   Article.loadAll = rows => {
-    Article.all = rows.map(rows.sort((a,b) => (new Date(b.publishedOn)) - (new Date(a.publishedOn))));
+    rows.sort((a,b) => (new Date(b.publishedOn)) - (new Date(a.publishedOn)));
 
+    Article.all = rows.map(ele => new Article(ele));
     // TODO: Refactor this forEach code, by using a `.map` call instead, since what we are trying to accomplish
     // is the transformation of one colleciton into another.
 
@@ -48,16 +49,36 @@
 
   // TODO: Chain together a `map` and a `reduce` call to get a rough count of all words in all articles.
   Article.numWordsAll = () => {
-    return Article.all.map().reduce()
+    return Article.all.map(
+      allBody => {
+        let bodies = allBody.body.split(' ').length;
+        return bodies;
+      })
+      .reduce((acc, val) => acc + val);
   };
 
   // TODO: Chain together a `map` and a `reduce` call to produce an array of unique author names.
   Article.allAuthors = () => {
-    return Article.all.map().reduce();
+    return Article.all.map(article => article.author).reduce((authors, author) => {
+      if (authors.indexOf(author) === -1) {
+        authors.push(author);
+      }
+      return authors;
+    }, []);
   };
 
   Article.numWordsByAuthor = () => {
     return Article.allAuthors().map(author => {
+      return {
+        name: author,
+        totalWords: Article.all.filter(function(article) {
+          return article.author === author;
+        })
+        .map(article => {
+          let authorBody = article.body.split(' ').length;
+          return authorBody;
+        }).reduce((acc, val) => acc + val)
+      }
       // TODO: Transform each author string into an object with properties for
       // the author's name, as well as the total number of words across all articles
       // written by the specified author.
@@ -107,4 +128,5 @@
     .then(console.log)
     .then(callback);
   };
-)();
+  module.Article = Article;
+}(window));
