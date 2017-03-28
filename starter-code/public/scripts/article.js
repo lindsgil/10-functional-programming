@@ -51,7 +51,6 @@
   Article.numWordsAll = () => {
     return Article.all.map(
       allBody => {
-        console.log(allBody.body);
         let bodies = allBody.body.split(' ').length;
         return bodies;
       })
@@ -60,11 +59,21 @@
 
   // TODO: Chain together a `map` and a `reduce` call to produce an array of unique author names.
   Article.allAuthors = () => {
-    return Article.all.map().reduce();
+    return Article.all.map(article => article.author).reduce((authors, author) => {authors.indexOf(author) === -1 ? authors.push(author): null, []});
   };
 
   Article.numWordsByAuthor = () => {
     return Article.allAuthors().map(author => {
+      return {
+        name: author,
+        totalWords: Article.all.filter(function(article) {
+          return article.author === author;
+        })
+        .map(article => {
+          let authorBody = article.body.split(' ').length;
+          return authorBody;
+        }).reduce((acc, val) => acc + val)
+      }
       // TODO: Transform each author string into an object with properties for
       // the author's name, as well as the total number of words across all articles
       // written by the specified author.
